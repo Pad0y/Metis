@@ -108,7 +108,9 @@ def time_series_double_exponential_weighted_moving_average(x):
     return temp_list
 
 
-def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b_right, data_a):
+def time_series_periodic_features(
+    data_c_left, data_c_right, data_b_left, data_b_right, data_a
+):
     """
     Returns the difference between the last element of data_a and the last element of data_b_left,
     the difference between the last element of data_a and the last element of data_c_left.
@@ -128,10 +130,10 @@ def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b
     """
     periodic_features = []
 
-    '''
+    """
     Add the absolute value of difference between today and a week ago and its sgn as two features
     Add the absolute value of difference between today and yesterday and its sgn as two features
-    '''
+    """
 
     temp_value = data_c_left[-1] - data_a[-1]
     periodic_features.append(abs(temp_value))
@@ -147,11 +149,11 @@ def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b
     else:
         periodic_features.append(1)
 
-    '''
+    """
     If the last value of today is larger than the whole subsequence of a week ago,
     then return the difference between the maximum of the whole subsequence of a week ago and the last value of today.
     Others are similar.
-    '''
+    """
 
     periodic_features.append(min(max(data_c_left) - data_a[-1], 0))
     periodic_features.append(min(max(data_c_right) - data_a[-1], 0))
@@ -162,11 +164,11 @@ def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b
     periodic_features.append(max(min(data_b_left) - data_a[-1], 0))
     periodic_features.append(max(min(data_b_right) - data_a[-1], 0))
 
-    '''
+    """
     If the last value of today is larger than the subsequence of a week ago,
     then return the difference between the maximum of the whole subsequence of a week ago and the last value of today.
     Others are similar.
-    '''
+    """
 
     for w in range(1, DEFAULT_WINDOW, DEFAULT_WINDOW / 6):
         periodic_features.append(min(max(data_c_left[-w:]) - data_a[-1], 0))
@@ -178,9 +180,9 @@ def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b
         periodic_features.append(max(min(data_b_left[-w:]) - data_a[-1], 0))
         periodic_features.append(max(min(data_b_right[:w]) - data_a[-1], 0))
 
-    '''
+    """
     Add the difference of mean values between two subsequences
-    '''
+    """
 
     for w in range(1, DEFAULT_WINDOW, DEFAULT_WINDOW / 9):
         temp_value = np.mean(data_c_left[-w:]) - np.mean(data_a[-w:])
@@ -213,9 +215,10 @@ def time_series_periodic_features(data_c_left, data_c_right, data_b_left, data_b
 
     step = DEFAULT_WINDOW / 6
     for w in range(1, DEFAULT_WINDOW, step):
-        periodic_features.append(min(max(data_a[w - 1:w + step]) - data_a[-1], 0))
-        periodic_features.append(max(min(data_a[w - 1:w + step]) - data_a[-1], 0))
+        periodic_features.append(min(max(data_a[w - 1 : w + step]) - data_a[-1], 0))
+        periodic_features.append(max(min(data_a[w - 1 : w + step]) - data_a[-1], 0))
     return periodic_features
+
 
 # add yourself fitting features here...
 
@@ -225,8 +228,14 @@ def get_fitting_features(x_list):
     fitting_features.extend(time_series_moving_average(x_list[4]))
     fitting_features.extend(time_series_weighted_moving_average(x_list[4]))
     fitting_features.extend(time_series_exponential_weighted_moving_average(x_list[4]))
-    fitting_features.extend(time_series_double_exponential_weighted_moving_average(x_list[4]))
-    fitting_features.extend(time_series_periodic_features(x_list[0], x_list[1], x_list[2], x_list[3], x_list[4]))
+    fitting_features.extend(
+        time_series_double_exponential_weighted_moving_average(x_list[4])
+    )
+    fitting_features.extend(
+        time_series_periodic_features(
+            x_list[0], x_list[1], x_list[2], x_list[3], x_list[4]
+        )
+    )
     # append yourself fitting features here...
 
     return fitting_features

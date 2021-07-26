@@ -25,8 +25,8 @@ class PolynomialInterpolation(object):
 
     def __init__(self, threshold=0.15, degree=4):
         """
-       :param threshold: The critical point of normal.
-       :param degree: Depth of iteration.
+        :param threshold: The critical point of normal.
+        :param degree: Depth of iteration.
         """
         self.degree = degree
         self.threshold = threshold
@@ -41,16 +41,23 @@ class PolynomialInterpolation(object):
         :param type window: int
         :return: 1 denotes normal, 0 denotes abnormal
         """
-        x_train = list(range(0, 2 * window + 1)) + list(range(0, 2 * window + 1)) + list(range(0, window + 1))
+        x_train = (
+            list(range(0, 2 * window + 1))
+            + list(range(0, 2 * window + 1))
+            + list(range(0, window + 1))
+        )
         x_train = np.array(x_train)
         x_train = x_train[:, np.newaxis]
-        avg_value = np.mean(X[-(window + 1):])
+        avg_value = np.mean(X[-(window + 1) :])
         if avg_value > 1:
             y_train = X / avg_value
         else:
             y_train = X
         model = make_pipeline(PolynomialFeatures(self.degree), Ridge())
         model.fit(x_train, y_train)
-        if abs(y_train[-1] - model.predict(np.array(x_train[-1]).reshape(1, -1))) > self.threshold:
+        if (
+            abs(y_train[-1] - model.predict(np.array(x_train[-1]).reshape(1, -1)))
+            > self.threshold
+        ):
             return 0
         return 1

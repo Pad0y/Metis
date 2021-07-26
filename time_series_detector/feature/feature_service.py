@@ -34,10 +34,16 @@ def extract_features(time_series, window):
     split_time_series = tsd_common.split_time_series(time_series, window)
     # nomalize time_series
     normalized_split_time_series = tsd_common.normalize_time_series(split_time_series)
-    max_min_normalized_time_series = tsd_common.normalize_time_series_by_max_min(split_time_series)
-    s_features = statistical_features.get_statistical_features(normalized_split_time_series[4])
+    max_min_normalized_time_series = tsd_common.normalize_time_series_by_max_min(
+        split_time_series
+    )
+    s_features = statistical_features.get_statistical_features(
+        normalized_split_time_series[4]
+    )
     f_features = fitting_features.get_fitting_features(normalized_split_time_series)
-    c_features = classification_features.get_classification_features(max_min_normalized_time_series)
+    c_features = classification_features.get_classification_features(
+        max_min_normalized_time_series
+    )
     # combine features with types
     features = s_features + f_features + c_features
     return features

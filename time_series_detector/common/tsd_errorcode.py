@@ -25,5 +25,5 @@ ERR_CODE = {
     TSD_CAL_FEATURE_ERR: "特征计算出错",
     TSD_READ_FEATURE_FAILED: "读取特征数据失败",
     TSD_TRAIN_ERR: "训练出错",
-    TSD_LACK_SAMPLE: "缺少正样本或负样本"
+    TSD_LACK_SAMPLE: "缺少正样本或负样本",
 }

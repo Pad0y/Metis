@@ -11,7 +11,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 import numpy as np
 import tsfresh.feature_extraction.feature_calculators as ts_feature_calculators
 from time_series_detector.common.tsd_common import DEFAULT_WINDOW, split_time_series
-from statistical_features import time_series_mean, time_series_variance, time_series_standard_deviation, time_series_median
+from statistical_features import (
+    time_series_mean,
+    time_series_variance,
+    time_series_standard_deviation,
+    time_series_median,
+)
 
 
 def time_series_autocorrelation(x):
@@ -91,7 +96,23 @@ def time_series_value_distribution(x):
     :return: the values of this feature
     :return type: list
     """
-    thresholds = [0, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 1.0, 1.0]
+    thresholds = [
+        0,
+        0.01,
+        0.05,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        0.99,
+        1.0,
+        1.0,
+    ]
     return list(np.histogram(x, bins=thresholds)[0] / float(len(x)))
 
 
@@ -105,7 +126,23 @@ def time_series_daily_parts_value_distribution(x):
     :return: the values of this feature
     :return type: list
     """
-    thresholds = [0, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 1.0, 1.0]
+    thresholds = [
+        0,
+        0.01,
+        0.05,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        0.99,
+        1.0,
+        1.0,
+    ]
     split_value_list = split_time_series(x, DEFAULT_WINDOW)
     data_c = split_value_list[0] + split_value_list[1][1:]
     data_b = split_value_list[2] + split_value_list[3][1:]
@@ -113,7 +150,11 @@ def time_series_daily_parts_value_distribution(x):
     count_c = list(np.histogram(data_c, bins=thresholds)[0])
     count_b = list(np.histogram(data_b, bins=thresholds)[0])
     count_a = list(np.histogram(data_a, bins=thresholds)[0])
-    return list(np.array(count_c) / float(len(data_c))) + list(np.array(count_b) / float(len(data_b))) + list(np.array(count_a) / float(len(data_a)))
+    return (
+        list(np.array(count_c) / float(len(data_c)))
+        + list(np.array(count_b) / float(len(data_b)))
+        + list(np.array(count_a) / float(len(data_a)))
+    )
 
 
 def time_series_daily_parts_value_distribution_with_threshold(x):
@@ -142,7 +183,11 @@ def time_series_daily_parts_value_distribution_with_threshold(x):
     nparray_data_a_threshold[nparray_data_a_threshold < threshold] = -1
 
     # the total number of elements in time series which is less than threshold:
-    nparray_threshold_count = (nparray_data_c_threshold == -1).sum() + (nparray_data_b_threshold == -1).sum() + (nparray_data_a_threshold == -1).sum()
+    nparray_threshold_count = (
+        (nparray_data_c_threshold == -1).sum()
+        + (nparray_data_b_threshold == -1).sum()
+        + (nparray_data_a_threshold == -1).sum()
+    )
 
     if nparray_threshold_count == 0:
         features = [0, 0, 0]
@@ -150,14 +195,16 @@ def time_series_daily_parts_value_distribution_with_threshold(x):
         features = [
             (nparray_data_c_threshold == -1).sum() / float(nparray_threshold_count),
             (nparray_data_b_threshold == -1).sum() / float(nparray_threshold_count),
-            (nparray_data_a_threshold == -1).sum() / float(nparray_threshold_count)
+            (nparray_data_a_threshold == -1).sum() / float(nparray_threshold_count),
         ]
 
-    features.extend([
-                    (nparray_data_c_threshold == -1).sum() / float(len(data_c)),
-                    (nparray_data_b_threshold == -1).sum() / float(len(data_b)),
-                    (nparray_data_a_threshold == -1).sum() / float(len(data_a))
-                    ])
+    features.extend(
+        [
+            (nparray_data_c_threshold == -1).sum() / float(len(data_c)),
+            (nparray_data_b_threshold == -1).sum() / float(len(data_b)),
+            (nparray_data_a_threshold == -1).sum() / float(len(data_a)),
+        ]
+    )
     return features
 
 
@@ -199,12 +246,16 @@ def get_classification_features(x):
         time_series_standard_deviation(x),
         time_series_median(x),
         time_series_autocorrelation(x),
-        time_series_coefficient_of_variation(x)
+        time_series_coefficient_of_variation(x),
     ]
     classification_features.extend(time_series_value_distribution(x))
     classification_features.extend(time_series_daily_parts_value_distribution(x))
-    classification_features.extend(time_series_daily_parts_value_distribution_with_threshold(x))
-    classification_features.extend(time_series_window_parts_value_distribution_with_threshold(x))
+    classification_features.extend(
+        time_series_daily_parts_value_distribution_with_threshold(x)
+    )
+    classification_features.extend(
+        time_series_window_parts_value_distribution_with_threshold(x)
+    )
     classification_features.extend(time_series_binned_entropy(x))
     # add yourself classification features here...
 

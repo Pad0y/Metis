@@ -11,8 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 from tests.fixtures import DataTestCase
 from time_series_detector.feature.statistical_features import *
 
-class FeatureTestCase(DataTestCase):
 
+class FeatureTestCase(DataTestCase):
     def test_features(self):
         testdata_a = self.create_test_data_a()
         self.assertTrue(time_series_maximum(testdata_a) == 1020900)
@@ -21,9 +21,9 @@ class FeatureTestCase(DataTestCase):
 
     def test_two(self):
         x = "hello"
-        assert 'hello' in x
+        assert "hello" in x
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a = FeatureTestCase()
     a.test_features()

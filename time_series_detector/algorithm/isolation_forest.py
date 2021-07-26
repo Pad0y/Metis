@@ -20,15 +20,17 @@ class IForest(object):
     https://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/icdm08b.pdf
     """
 
-    def __init__(self,
-                 n_estimators=3,
-                 max_samples="auto",
-                 contamination=0.15,
-                 max_feature=1.,
-                 bootstrap=False,
-                 n_jobs=1,
-                 random_state=None,
-                 verbose=0):
+    def __init__(
+        self,
+        n_estimators=3,
+        max_samples="auto",
+        contamination=0.15,
+        max_feature=1.0,
+        bootstrap=False,
+        n_jobs=1,
+        random_state=None,
+        verbose=0,
+    ):
         """
         :param n_estimators: The number of base estimators in the ensemble.
         :param max_samples: The number of samples to draw from X to train each base estimator.
@@ -59,9 +61,22 @@ class IForest(object):
         :param type window: int
         :return: 1 denotes normal, 0 denotes abnormal.
         """
-        x_train = list(range(0, 2 * window + 1)) + list(range(0, 2 * window + 1)) + list(range(0, window + 1))
+        x_train = (
+            list(range(0, 2 * window + 1))
+            + list(range(0, 2 * window + 1))
+            + list(range(0, window + 1))
+        )
         sample_features = zip(x_train, X)
-        clf = IsolationForest(self.n_estimators, self.max_samples, self.contamination, self.max_feature, self.bootstrap, self.n_jobs, self.random_state, self.verbose)
+        clf = IsolationForest(
+            self.n_estimators,
+            self.max_samples,
+            self.contamination,
+            self.max_feature,
+            self.bootstrap,
+            self.n_jobs,
+            self.random_state,
+            self.verbose,
+        )
         clf.fit(sample_features)
         predict_res = clf.predict(sample_features)
         if predict_res[-1] == -1:

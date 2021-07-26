@@ -9,14 +9,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 """
 
 import os
-from time_series_detector.algorithm import isolation_forest, ewma, polynomial_interpolation, statistic, xgboosting
+from time_series_detector.algorithm import (
+    isolation_forest,
+    ewma,
+    polynomial_interpolation,
+    statistic,
+    xgboosting,
+)
 from time_series_detector.common.tsd_errorcode import *
 from time_series_detector.common.tsd_common import *
-MODEL_PATH = os.path.join(os.path.dirname(__file__), './model/')
+
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "./model/")
 
 
 class Detect(object):
-
     def __init__(self):
         self.iforest_obj = isolation_forest.IForest()
         self.ewma_obj = ewma.Ewma()
@@ -33,29 +39,33 @@ class Detect(object):
         return True
 
     def __check_param(self, data):
-        if ("dataC" not in data.keys()) or ("dataB" not in data.keys()) or ("dataA" not in data.keys()):
+        if (
+            ("dataC" not in data.keys())
+            or ("dataB" not in data.keys())
+            or ("dataA" not in data.keys())
+        ):
             return TSD_CHECK_PARAM_FAILED, "missing parameter"
-        if not data['dataA']:
+        if not data["dataA"]:
             return TSD_CHECK_PARAM_FAILED, "dataA can not be empty"
-        if not data['dataB']:
+        if not data["dataB"]:
             return TSD_CHECK_PARAM_FAILED, "dataB can not be empty"
-        if not data['dataC']:
+        if not data["dataC"]:
             return TSD_CHECK_PARAM_FAILED, "dataC can not be empty"
-        if not self.__list_is_digit(data['dataA'].split(',')):
+        if not self.__list_is_digit(data["dataA"].split(",")):
             return TSD_CHECK_PARAM_FAILED, "dataA contains illegal numbers"
-        if not self.__list_is_digit(data['dataB'].split(',')):
+        if not self.__list_is_digit(data["dataB"].split(",")):
             return TSD_CHECK_PARAM_FAILED, "dataB contains illegal numbers"
-        if not self.__list_is_digit(data['dataC'].split(',')):
+        if not self.__list_is_digit(data["dataC"].split(",")):
             return TSD_CHECK_PARAM_FAILED, "dataC contains illegal numbers"
         if "window" in data:
             window = data["window"]
         else:
             window = DEFAULT_WINDOW
-        if len(data['dataC'].split(',')) != (2 * window + 1):
+        if len(data["dataC"].split(",")) != (2 * window + 1):
             return TSD_CHECK_PARAM_FAILED, "dataC length does not match"
-        if len(data['dataB'].split(',')) != (2 * window + 1):
+        if len(data["dataB"].split(",")) != (2 * window + 1):
             return TSD_CHECK_PARAM_FAILED, "dataB length does not match"
-        if len(data['dataA'].split(',')) != (window + 1):
+        if len(data["dataA"].split(",")) != (window + 1):
             return TSD_CHECK_PARAM_FAILED, "dataA length does not match"
         return TSD_OP_SUCCESS, ""
 
@@ -82,7 +92,7 @@ class Detect(object):
         else:
             model_name = MODEL_PATH + "xgb_default_model"
         combined_data = data["dataC"] + "," + data["dataB"] + "," + data["dataA"]
-        time_series = map(int, combined_data.split(','))
+        time_series = map(int, combined_data.split(","))
         if "window" in data:
             window = data["window"]
         else:
@@ -90,7 +100,7 @@ class Detect(object):
         statistic_result = self.statistic_obj.predict(time_series)
         ewma_result = self.ewma_obj.predict(time_series)
         polynomial_result = self.polynomial_obj.predict(time_series, window)
-        if statistic_result == 0 or ewma_result == 0 or polynomial_result == 0 :
+        if statistic_result == 0 or ewma_result == 0 or polynomial_result == 0:
             xgb_result = self.supervised_obj.predict(time_series, window, model_name)
             res_value = xgb_result[0]
             prob = xgb_result[1]
@@ -114,7 +124,7 @@ class Detect(object):
                     'ret', the result of detect(1 denotes normal, 0 denotes abnormal).
         """
         combined_data = data["dataC"] + "," + data["dataB"] + "," + data["dataA"]
-        time_series = map(float, combined_data.split(','))
+        time_series = map(float, combined_data.split(","))
         statistic_result = self.statistic_obj.predict(time_series)
         if statistic_result == 0:
             prob = 0

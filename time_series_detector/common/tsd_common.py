@@ -24,7 +24,10 @@ def is_standard_time_series(time_series, window=DEFAULT_WINDOW):
     :return: True or False
     :return type: boolean
     """
-    return bool(len(time_series) == 5 * window + 3 and np.mean(time_series[(4 * window + 2):]) > 0)
+    return bool(
+        len(time_series) == 5 * window + 3
+        and np.mean(time_series[(4 * window + 2) :]) > 0
+    )
 
 
 def split_time_series(time_series, window=DEFAULT_WINDOW):
@@ -35,18 +38,12 @@ def split_time_series(time_series, window=DEFAULT_WINDOW):
     :param window: the length of window
     :return: spilt list [[data_c_left], [data_c_right], [data_b_left], [data_b_right], [data_a]]
     """
-    data_c_left = time_series[0:(window + 1)]
-    data_c_right = time_series[window:(2 * window + 1)]
-    data_b_left = time_series[(2 * window + 1):(3 * window + 2)]
-    data_b_right = time_series[(3 * window + 1):(4 * window + 2)]
-    data_a = time_series[(4 * window + 2):]
-    split_time_series = [
-        data_c_left,
-        data_c_right,
-        data_b_left,
-        data_b_right,
-        data_a
-    ]
+    data_c_left = time_series[0 : (window + 1)]
+    data_c_right = time_series[window : (2 * window + 1)]
+    data_b_left = time_series[(2 * window + 1) : (3 * window + 2)]
+    data_b_right = time_series[(3 * window + 1) : (4 * window + 2)]
+    data_a = time_series[(4 * window + 2) :]
+    split_time_series = [data_c_left, data_c_right, data_b_left, data_b_right, data_a]
     return split_time_series
 
 
@@ -75,7 +72,7 @@ def normalize_time_series(split_time_series):
         normalized_data_c_right,
         normalized_data_b_left,
         normalized_data_b_right,
-        normalized_data_a
+        normalized_data_a,
     ]
     return normalized_split_time_series
 
@@ -87,11 +84,19 @@ def normalize_time_series_by_max_min(split_time_series):
     :param split_time_series: [[data_c_left], [data_c_right], [data_b_left], [data_b_right], [data_a]]
     :return: max_min_normalized time_series
     """
-    time_series = split_time_series[0] + split_time_series[1][1:] + split_time_series[2] + split_time_series[3][1:] + split_time_series[4]
+    time_series = (
+        split_time_series[0]
+        + split_time_series[1][1:]
+        + split_time_series[2]
+        + split_time_series[3][1:]
+        + split_time_series[4]
+    )
     max_value = np.max(time_series)
     min_value = np.min(time_series)
-    normalized_time_series = [0.0]*len(time_series)
+    normalized_time_series = [0.0] * len(time_series)
     if max_value - min_value > 0:
-        normalized_time_series = list((np.array(time_series) - min_value) / float(max_value - min_value))
+        normalized_time_series = list(
+            (np.array(time_series) - min_value) / float(max_value - min_value)
+        )
 
     return normalized_time_series

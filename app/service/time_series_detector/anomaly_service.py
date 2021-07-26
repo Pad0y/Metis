@@ -13,7 +13,6 @@ from app.dao.time_series_detector.anomaly_op import *
 
 
 class AnomalyService(object):
-
     def __init__(self):
         self.__anomaly = AbnormalOperation()
 

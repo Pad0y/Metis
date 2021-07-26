@@ -21,6 +21,7 @@ def check_post(func):
         else:
             return_dict = build_ret_data(NOT_POST)
         return render_json(return_dict)
+
     return f
 
 
@@ -64,11 +65,11 @@ def download_sample(request):
     if request.method == "GET":
         try:
             sample_service = SampleService()
-            ret_code, file_name = sample_service.sample_download(request.GET['id'])
-            files = open(file_name, 'rb')
+            ret_code, file_name = sample_service.sample_download(request.GET["id"])
+            files = open(file_name, "rb")
             response = FileResponse(files)
-            response['Content-Type'] = 'application/octet-stream'
-            response['Content-Disposition'] = 'attachment;filename = "SampleExport.csv"'
+            response["Content-Type"] = "application/octet-stream"
+            response["Content-Disposition"] = 'attachment;filename = "SampleExport.csv"'
             return response
         except Exception as ex:
             return_dict = build_ret_data(THROW_EXP, str(ex))

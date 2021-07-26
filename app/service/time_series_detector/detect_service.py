@@ -19,11 +19,11 @@ from time_series_detector import detect
 from app.common.errorcode import *
 from app.common.common import *
 from time_series_detector.common.tsd_errorcode import *
-MODEL_PATH = os.path.join(os.path.dirname(__file__), './model/')
+
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "./model/")
 
 
 class DetectService(object):
-
     def __init__(self):
         self.sample_op_obj = sample_op.SampleOperation()
         self.anomaly_op_obj = anomaly_op.AbnormalOperation()
@@ -47,7 +47,7 @@ class DetectService(object):
                 "task_id": task_id,
                 "end_time": current_timestamp,
                 "status": train_status,
-                "model_name": task_id + "_model"
+                "model_name": task_id + "_model",
             }
         else:
             train_status = "failed"
@@ -55,7 +55,7 @@ class DetectService(object):
                 "task_id": task_id,
                 "end_time": current_timestamp,
                 "status": train_status,
-                "model_name": ""
+                "model_name": "",
             }
         train_op_obj.update_model_info(params)
 
@@ -69,7 +69,7 @@ class DetectService(object):
             "positiveOrNegative": data["positiveOrNegative"],
             "source": data["source"],
             "beginTime": data["beginTime"],
-            "endTime": data["endTime"]
+            "endTime": data["endTime"],
         }
         samples = self.sample_op_obj.sample_query_all(sample_params)
         train_op_obj = train_op.TrainOperation()
@@ -77,7 +77,9 @@ class DetectService(object):
         positive_count = 0
         negative_count = 0
         for index in samples:
-            samples_list.append({"flag": index["flag"], "data": map(int, index["data"].split(','))})
+            samples_list.append(
+                {"flag": index["flag"], "data": map(int, index["data"].split(","))}
+            )
             if index["flag"] == 1:
                 positive_count = positive_count + 1
             else:
@@ -91,13 +93,19 @@ class DetectService(object):
             "source": data["source"],
             "sample_num": len(samples_list),
             "postive_sample_num": positive_count,
-            "negative_sample_num": negative_count
+            "negative_sample_num": negative_count,
         }
         if positive_count == 0 or negative_count == 0:
             return build_ret_data(LACK_SAMPLE, "")
         train_op_obj.insert_train_info(train_params)
         try:
-            t = threading.Thread(target=self.__generate_model, args=(samples_list, task_id, ))
+            t = threading.Thread(
+                target=self.__generate_model,
+                args=(
+                    samples_list,
+                    task_id,
+                ),
+            )
             t.setDaemon(False)
             t.start()
         except Exception:
@@ -106,7 +114,7 @@ class DetectService(object):
                 "task_id": task_id,
                 "end_time": int(time.time()),
                 "status": train_status,
-                "model_name": ""
+                "model_name": "",
             }
             train_op_obj.update_model_info(params)
         return build_ret_data(OP_SUCCESS, "")
@@ -120,7 +128,16 @@ class DetectService(object):
         return True
 
     def __check_param(self, data):
-        if ("viewName" not in data.keys()) or ("viewId" not in data.keys()) or ("attrId" not in data.keys()) or ("attrName" not in data.keys()) or ("time" not in data.keys()) or ("dataC" not in data.keys()) or ("dataB" not in data.keys()) or ("dataA" not in data.keys()):
+        if (
+            ("viewName" not in data.keys())
+            or ("viewId" not in data.keys())
+            or ("attrId" not in data.keys())
+            or ("attrName" not in data.keys())
+            or ("time" not in data.keys())
+            or ("dataC" not in data.keys())
+            or ("dataB" not in data.keys())
+            or ("dataA" not in data.keys())
+        ):
             return CHECK_PARAM_FAILED, "missing parameter"
         return OP_SUCCESS, ""
 
@@ -138,7 +155,7 @@ class DetectService(object):
                 "time": data["time"],
                 "data_c": data["dataC"],
                 "data_b": data["dataB"],
-                "data_a": data["dataA"]
+                "data_a": data["dataA"],
             }
             self.anomaly_op_obj.insert_anomaly(anomaly_params)
         return build_ret_data(ret_code, ret_data)
@@ -157,7 +174,7 @@ class DetectService(object):
                 "time": data["time"],
                 "data_c": data["dataC"],
                 "data_b": data["dataB"],
-                "data_a": data["dataA"]
+                "data_a": data["dataA"],
             }
             self.anomaly_op_obj.insert_anomaly(anomaly_params)
         return build_ret_data(OP_SUCCESS, ret_data)

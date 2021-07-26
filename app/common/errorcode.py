@@ -31,5 +31,5 @@ ERR_CODE = {
     CAL_FEATURE_ERR: "特征计算出错",
     READ_FEATURE_FAILED: "读取特征数据失败",
     TRAIN_ERR: "训练出错",
-    LACK_SAMPLE: "缺少正样本或负样本"
+    LACK_SAMPLE: "缺少正样本或负样本",
 }

@@ -15,7 +15,6 @@ from app.common.common import *
 
 
 class TrainService(object):
-
     def __init__(self):
         self.__train_op = TrainOperation()
 

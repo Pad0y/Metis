@@ -13,7 +13,8 @@ import xgboost as xgb
 from time_series_detector.feature import feature_service
 from time_series_detector.common.tsd_errorcode import *
 from time_series_detector.common.tsd_common import *
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '../model/')
+
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "../model/")
 DEFAULT_MODEL = MODEL_PATH + "xgb_default_model"
 
 
@@ -28,18 +29,20 @@ class XGBoosting(object):
     https://github.com/dmlc/xgboost
     """
 
-    def __init__(self,
-                 threshold=0.15,
-                 max_depth=10,
-                 eta=0.05,
-                 gamma=0.1,
-                 silent=1,
-                 min_child_weight=1,
-                 subsample=0.8,
-                 colsample_bytree=1,
-                 booster='gbtree',
-                 objective='binary:logistic',
-                 eval_metric='auc'):
+    def __init__(
+        self,
+        threshold=0.15,
+        max_depth=10,
+        eta=0.05,
+        gamma=0.1,
+        silent=1,
+        min_child_weight=1,
+        subsample=0.8,
+        colsample_bytree=1,
+        booster="gbtree",
+        objective="binary:logistic",
+        eval_metric="auc",
+    ):
         """
         :param threshold: The critical point of normal.
         :param max_depth: Maximum tree depth for base learners.
@@ -80,10 +83,13 @@ class XGBoosting(object):
         for temp in data:
             if times > 0:
                 f.write("\n")
-            result = ['{0}:{1}'.format(int(index) + 1, value) for index, value in enumerate(temp[0])]
+            result = [
+                "{0}:{1}".format(int(index) + 1, value)
+                for index, value in enumerate(temp[0])
+            ]
             f.write(str(temp[1]))
             for x in result:
-                f.write(' ' + x)
+                f.write(" " + x)
             times = times + 1
         return TSD_OP_SUCCESS, ""
 
@@ -127,16 +133,16 @@ class XGBoosting(object):
         except Exception as ex:
             return TSD_READ_FEATURE_FAILED, str(ex)
         params = {
-            'max_depth': self.max_depth,
-            'eta': self.eta,
-            'gamma': self.gamma,
-            'silent': self.silent,
-            'min_child_weight': self.min_child_weight,
-            'subsample': self.subsample,
-            'colsample_bytree': self.colsample_bytree,
-            'booster': self.booster,
-            'objective': self.objective,
-            'eval_metric': self.eval_metric,
+            "max_depth": self.max_depth,
+            "eta": self.eta,
+            "gamma": self.gamma,
+            "silent": self.silent,
+            "min_child_weight": self.min_child_weight,
+            "subsample": self.subsample,
+            "colsample_bytree": self.colsample_bytree,
+            "booster": self.booster,
+            "objective": self.objective,
+            "eval_metric": self.eval_metric,
         }
         try:
             bst = xgb.train(params, dtrain, num_round)
@@ -159,7 +165,7 @@ class XGBoosting(object):
             features.extend(feature_service.extract_features(X, window))
             ts_features.append(features)
             res_pred = xgb.DMatrix(np.array(ts_features))
-            bst = xgb.Booster({'nthread': 4})
+            bst = xgb.Booster({"nthread": 4})
             bst.load_model(model_name)
             xgb_ret = bst.predict(res_pred)
             if xgb_ret[0] < self.threshold:

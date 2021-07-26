@@ -18,7 +18,7 @@ INPUT_LEN_CH_MAX = 64
 INPUT_ITEM_PER_PAGE_MAX = 100
 INPUT_LIST_LEN_MAX = 5
 VALUE_LEN_MAX = 50000
-UPLOAD_FILE = '/tmp/tmpfile_%s.csv'
+UPLOAD_FILE = "/tmp/tmpfile_%s.csv"
 MARK_POSITIVE = 1
 MARK_NEGATIVE = 2
 
@@ -37,4 +37,5 @@ def exce_service(func):
             traceback.print_exc()
             return_dict = build_ret_data(THROW_EXP, str(ex))
         return return_dict
+
     return wrapper

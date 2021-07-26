@@ -17,7 +17,6 @@ from app.common.common import *
 
 
 class SampleService(object):
-
     def __init__(self):
         self.__sample = SampleOperation()
         uuid_str = uuid.uuid4().hex[:8]
@@ -29,10 +28,10 @@ class SampleService(object):
 
     def import_file(self, file_data):
         try:
-            pfile = file_data['sample_file']
-            with open(self.__upload_file_path, 'wb+') as destination:
+            pfile = file_data["sample_file"]
+            with open(self.__upload_file_path, "wb+") as destination:
                 for chunk in pfile.chunks():
-                    destination.write(chunk.replace('\x00', ''))
+                    destination.write(chunk.replace("\x00", ""))
             data = []
             csv_reader = csv.reader(open(self.__upload_file_path))
             next(csv_reader)
@@ -40,21 +39,23 @@ class SampleService(object):
             positive_count = 0
             negative_count = 0
             for row in csv_reader:
-                one_item = {"viewName": row[0],
-                            "viewId": row[1],
-                            "attrName": row[2],
-                            "attrId": row[3],
-                            "source": row[4],
-                            "trainOrTest": row[5],
-                            "positiveOrNegative": row[6],
-                            "window": row[7],
-                            "dataC": row[8],
-                            "dataB": row[9],
-                            "dataA": row[10],
-                            "dataTime": int(row[11]),
-                            "updateTime": int(row[11]),
-                            "time": int(row[11]),
-                            "anomalyId": "0"}
+                one_item = {
+                    "viewName": row[0],
+                    "viewId": row[1],
+                    "attrName": row[2],
+                    "attrId": row[3],
+                    "source": row[4],
+                    "trainOrTest": row[5],
+                    "positiveOrNegative": row[6],
+                    "window": row[7],
+                    "dataC": row[8],
+                    "dataB": row[9],
+                    "dataA": row[10],
+                    "dataTime": int(row[11]),
+                    "updateTime": int(row[11]),
+                    "time": int(row[11]),
+                    "anomalyId": "0",
+                }
                 data.append(one_item)
                 if row[6] == "positive":
                     positive_count = positive_count + 1
@@ -67,8 +68,12 @@ class SampleService(object):
             return return_dict
 
         import_ret = self.import_sample(data)
-        if OP_SUCCESS == import_ret['code']:
-            ret_data = {"positiveCount": positive_count, "negativeCount": negative_count, "totalCount": count}
+        if OP_SUCCESS == import_ret["code"]:
+            ret_data = {
+                "positiveCount": positive_count,
+                "negativeCount": negative_count,
+                "totalCount": count,
+            }
             import_ret["data"] = ret_data
         return import_ret
 

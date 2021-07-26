@@ -338,7 +338,9 @@ def time_series_percentage_of_reoccurring_datapoints_to_all_datapoints(x):
     :return: the value of this feature
     :return type: float
     """
-    return ts_feature_calculators.percentage_of_reoccurring_datapoints_to_all_datapoints(x)
+    return (
+        ts_feature_calculators.percentage_of_reoccurring_datapoints_to_all_datapoints(x)
+    )
 
 
 def time_series_ratio_value_number_to_time_series_length(x):
@@ -406,6 +408,7 @@ def time_series_range(x):
     """
     return time_series_maximum(x) - time_series_minimum(x)
 
+
 # add yourself statistical features here...
 
 
@@ -440,7 +443,7 @@ def get_statistical_features(x):
         time_series_sum_of_reoccurring_data_points(x),
         time_series_sum_of_reoccurring_values(x),
         time_series_sum_values(x),
-        time_series_range(x)
+        time_series_range(x),
     ]
     # append yourself statistical features here...
 

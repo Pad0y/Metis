@@ -14,7 +14,6 @@ from time_series_detector.common.tsd_common import *
 
 
 class EwmaAndPolynomialInterpolation(object):
-
     def __init__(self, alpha=0.3, coefficient=3, threshold=0.15, degree=4):
         """
         :param alpha: Discount rate of ewma, usually in (0.2, 0.3).
@@ -42,7 +41,9 @@ class EwmaAndPolynomialInterpolation(object):
         if ewma_ret == 1:
             result = 1
         else:
-            polynomial_obj = polynomial_interpolation.PolynomialInterpolation(self.threshold, self.degree)
+            polynomial_obj = polynomial_interpolation.PolynomialInterpolation(
+                self.threshold, self.degree
+            )
             polynomial_ret = polynomial_obj.predict(X, window)
             result = polynomial_ret
         return result
